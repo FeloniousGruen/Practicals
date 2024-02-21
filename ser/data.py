@@ -7,7 +7,7 @@ from torchvision import datasets
 PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 
-def get_data_loaders(batch_size = 2): 
+def get_data_loaders(batch_size = 1000): 
     # dataloaders
     training_dataloader = DataLoader(
         datasets.MNIST(root="../data", download=True, train=True, transform=get_transforms()),

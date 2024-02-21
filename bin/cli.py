@@ -1,6 +1,9 @@
 from pathlib import Path
-from ser.train import training_function
-
+from ser.train import training_function, save_results
+from ser.data import get_data_loaders
+from ser.model import Net
+from torch import optim
+import torch
 import typer
 
 main = typer.Typer()
@@ -10,6 +13,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 
 
 @main.command()
+
 def train(
     name: str = typer.Option(
         ..., "-n", "--name", help="Name of experiment to save under."
@@ -24,11 +28,23 @@ def train(
         default = 0.01, help="Learning rate for experiment."
     ),
 ):
-
-    
     print(f"Running experiment {name}")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # save the parameters!
+    # load model
+    model = Net().to(device)
+
+    # setup params
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    training_dataloader, validation_dataloader = get_data_loaders(batch_size)
+    
     # train
-    training_function(epochs, batch_size, learning_rate)
+    training_function(epochs, training_dataloader, device, model, optimizer, validation_dataloader)
+    
+    # Save results to runs folder with hyperparameters etc
+    save_results(model, epochs, batch_size, learning_rate)
 
 
 @main.command()
