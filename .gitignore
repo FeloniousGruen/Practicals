@@ -3,7 +3,7 @@ data/MNIST
 .idea
 results/
 .DS_Store
-
+runs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
